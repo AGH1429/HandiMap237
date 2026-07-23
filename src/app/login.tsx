@@ -1,6 +1,7 @@
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, StatusBar } from 'react-native';
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -10,23 +11,19 @@ export default function LoginScreen() {
 
   async function handleLogin() {
     if (!email || !password) {
-      Alert.alert('Erreur', 'Veuillez remplir tous les champs');
+      Alert.alert('Champs manquants', 'Veuillez remplir tous les champs');
       return;
     }
-
     setLoading(true);
     try {
-      const response = await fetch('http://10.203.113.208:3000/api/auth/login', {
+      const response = await fetch('http://10.231.107.208:3000/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
-
       const data = await response.json();
-
       if (response.ok) {
-        Alert.alert('Succès', 'Connexion réussie !');
-        router.replace('/');
+        router.replace('/home' as any);
       } else {
         Alert.alert('Erreur', data.message);
       }
@@ -38,89 +35,153 @@ export default function LoginScreen() {
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>HandiMap 237</Text>
-      <Text style={styles.subtitle}>Connexion</Text>
+    <LinearGradient colors={['#1a56db', '#0a2d6e']} style={styles.gradient}>
+      <StatusBar barStyle="light-content" />
+      <View style={styles.container}>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
+        <View style={styles.logoContainer}>
+          <Text style={styles.logoIcon}>♿</Text>
+          <Text style={styles.logoText}>HandiMap 237</Text>
+          <Text style={styles.tagline}>Accessibilité pour tous</Text>
+        </View>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Mot de passe"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Connexion</Text>
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={handleLogin}
-        disabled={loading}
-      >
-        <Text style={styles.buttonText}>
-          {loading ? 'Connexion...' : 'Se connecter'}
-        </Text>
-      </TouchableOpacity>
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>Email</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="exemple@email.com"
+              placeholderTextColor="#aaa"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+          </View>
 
-      <TouchableOpacity onPress={() => router.push('/register')}>
-        <Text style={styles.link}>Pas de compte ? S'inscrire</Text>
-      </TouchableOpacity>
-    </View>
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>Mot de passe</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="••••••••"
+              placeholderTextColor="#aaa"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+            />
+          </View>
+
+          <TouchableOpacity
+            style={[styles.button, loading && styles.buttonDisabled]}
+            onPress={handleLogin}
+            disabled={loading}
+          >
+            <Text style={styles.buttonText}>
+              {loading ? 'Connexion en cours...' : 'Se connecter'}
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => router.push('/register')}>
+            <Text style={styles.link}>
+              Pas encore de compte ? <Text style={styles.linkBold}>S'inscrire</Text>
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+      </View>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
+  gradient: { flex: 1 },
   container: {
     flex: 1,
-    backgroundColor: '#f0f4ff',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 24,
   },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#1a56db',
+  logoContainer: {
+    alignItems: 'center',
+    marginBottom: 40,
+  },
+  logoIcon: {
+    fontSize: 60,
     marginBottom: 8,
   },
-  subtitle: {
-    fontSize: 18,
-    color: '#555',
-    marginBottom: 32,
+  logoText: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#fff',
+    letterSpacing: 1,
   },
-  input: {
+  tagline: {
+    fontSize: 14,
+    color: '#a0c4ff',
+    marginTop: 4,
+  },
+  card: {
     width: '100%',
     backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 28,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  cardTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#1a56db',
+    marginBottom: 24,
+    textAlign: 'center',
+  },
+  inputContainer: {
+    marginBottom: 16,
+  },
+  inputLabel: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#555',
+    marginBottom: 6,
+  },
+  input: {
+    backgroundColor: '#f5f7ff',
     borderRadius: 10,
     padding: 14,
-    marginBottom: 16,
-    fontSize: 16,
+    fontSize: 15,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: '#dde3f0',
+    color: '#333',
   },
   button: {
-    width: '100%',
     backgroundColor: '#1a56db',
-    borderRadius: 10,
+    borderRadius: 12,
     padding: 16,
     alignItems: 'center',
-    marginBottom: 16,
+    marginTop: 8,
+    marginBottom: 20,
+  },
+  buttonDisabled: {
+    backgroundColor: '#7aa3e8',
   },
   buttonText: {
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
+    letterSpacing: 0.5,
   },
   link: {
-    color: '#1a56db',
+    color: '#888',
     fontSize: 14,
-    marginTop: 8,
+    textAlign: 'center',
+  },
+  linkBold: {
+    color: '#1a56db',
+    fontWeight: 'bold',
   },
 });
