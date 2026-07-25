@@ -1,18 +1,28 @@
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Switch } from 'react-native';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useFonts, Poppins_700Bold, Poppins_600SemiBold, Poppins_400Regular, Poppins_300Light } from '@expo-google-fonts/poppins';
+import { useState } from 'react';
+import { useFonts, Poppins_700Bold, Poppins_600SemiBold, Poppins_400Regular, Poppins_400Regular_Italic } from '@expo-google-fonts/poppins';
 
 export default function HomeScreen() {
   const router = useRouter();
+  const [darkMode, setDarkMode] = useState(false);
+
   const [fontsLoaded] = useFonts({
     Poppins_700Bold,
     Poppins_600SemiBold,
     Poppins_400Regular,
-    Poppins_300Light,
+    Poppins_400Regular_Italic,
   });
 
   if (!fontsLoaded) return null;
+
+  const theme = {
+    bg: darkMode ? '#1a1a2e' : '#f0f4ff',
+    cardBg: darkMode ? '#16213e' : '#ffffff',
+    text: darkMode ? '#ffffff' : '#1a2d6e',
+    subtext: darkMode ? '#a0a0b0' : '#666',
+  };
 
   const categories = [
     { icon: '🍽️', label: 'Restaurants', color: ['#ff6b6b', '#ee5a24'] },
@@ -24,16 +34,28 @@ export default function HomeScreen() {
   ];
 
   return (
-    <View style={styles.container}>
-      <LinearGradient colors={['#1a56db', '#0a2d6e']} style={styles.header}>
+    <View style={{ flex: 1, backgroundColor: theme.bg }}>
+      <LinearGradient colors={['#48cae4', '#0096c7']} style={styles.header}>
+        <View style={styles.themeToggle}>
+          <Text style={styles.themeText}>{darkMode ? '🌙' : '☀️'}</Text>
+          <Switch
+            value={darkMode}
+            onValueChange={setDarkMode}
+            trackColor={{ false: '#a0c4ff', true: '#444' }}
+            thumbColor="#fff"
+          />
+        </View>
         <Text style={styles.headerIcon}>♿</Text>
         <Text style={styles.headerTitle}>HandiMap 237</Text>
         <Text style={styles.headerSubtitle}>Trouvez des lieux accessibles près de vous</Text>
       </LinearGradient>
 
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-
-        <Text style={styles.sectionTitle}>Que recherchez-vous ?</Text>
+      <ScrollView
+        style={{ flex: 1, backgroundColor: theme.bg }}
+        contentContainerStyle={{ padding: 20 }}
+        showsVerticalScrollIndicator={false}
+      >
+        <Text style={[styles.sectionTitle, { color: theme.text }]}>Que recherchez-vous ?</Text>
 
         <View style={styles.grid}>
           {categories.map((cat, index) => (
@@ -50,12 +72,12 @@ export default function HomeScreen() {
           ))}
         </View>
 
-        <Text style={styles.sectionTitle}>Actions rapides</Text>
+        <Text style={[styles.sectionTitle, { color: theme.text }]}>Actions rapides</Text>
 
         <TouchableOpacity onPress={() => router.push('/propose' as any)}>
-          <LinearGradient colors={['#1a56db', '#0a2d6e']} style={styles.actionButton}>
+          <LinearGradient colors={['#48cae4', '#0096c7']} style={styles.actionButton}>
             <Text style={styles.actionIcon}>➕</Text>
-            <View>
+            <View style={{ flex: 1 }}>
               <Text style={styles.actionTitle}>Proposer un lieu</Text>
               <Text style={styles.actionSubtitle}>Aidez la communauté en ajoutant un lieu accessible</Text>
             </View>
@@ -65,7 +87,7 @@ export default function HomeScreen() {
         <TouchableOpacity onPress={() => router.push('/map' as any)}>
           <LinearGradient colors={['#00b894', '#00cec9']} style={styles.actionButton}>
             <Text style={styles.actionIcon}>🗺️</Text>
-            <View>
+            <View style={{ flex: 1 }}>
               <Text style={styles.actionTitle}>Voir la carte</Text>
               <Text style={styles.actionSubtitle}>Visualisez les lieux accessibles sur la carte</Text>
             </View>
@@ -75,7 +97,7 @@ export default function HomeScreen() {
         <TouchableOpacity onPress={() => router.push('/admin' as any)}>
           <LinearGradient colors={['#e17055', '#d63031']} style={styles.actionButton}>
             <Text style={styles.actionIcon}>⚙️</Text>
-            <View>
+            <View style={{ flex: 1 }}>
               <Text style={styles.actionTitle}>Dashboard Admin</Text>
               <Text style={styles.actionSubtitle}>Gérer les lieux et les utilisateurs</Text>
             </View>
@@ -88,12 +110,19 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f0f4ff' },
   header: {
     padding: 32,
     paddingTop: 60,
     alignItems: 'center',
   },
+  themeToggle: {
+    position: 'absolute',
+    top: 50,
+    right: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  themeText: { fontSize: 18, marginRight: 6 },
   headerIcon: { fontSize: 52, marginBottom: 8 },
   headerTitle: {
     fontSize: 30,
@@ -103,16 +132,14 @@ const styles = StyleSheet.create({
   },
   headerSubtitle: {
     fontSize: 13,
-    fontFamily: 'Poppins_300Light',
-    color: '#a0c4ff',
+    fontFamily: 'Poppins_400Regular_Italic',
+    color: 'rgba(255,255,255,0.9)',
     marginTop: 6,
     textAlign: 'center',
   },
-  content: { padding: 20 },
   sectionTitle: {
     fontSize: 18,
     fontFamily: 'Poppins_600SemiBold',
-    color: '#1a2d6e',
     marginBottom: 16,
     marginTop: 8,
   },
@@ -130,10 +157,6 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 16,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
     elevation: 5,
   },
   cardIcon: { fontSize: 32, marginBottom: 8 },
@@ -149,10 +172,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
     elevation: 5,
   },
   actionIcon: { fontSize: 32, marginRight: 16 },
@@ -163,9 +182,8 @@ const styles = StyleSheet.create({
   },
   actionSubtitle: {
     fontSize: 11,
-    fontFamily: 'Poppins_300Light',
-    color: 'rgba(255,255,255,0.8)',
+    fontFamily: 'Poppins_400Regular_Italic',
+    color: 'rgba(255,255,255,0.85)',
     marginTop: 4,
-    maxWidth: 220,
   },
 });
