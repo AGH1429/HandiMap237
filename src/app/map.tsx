@@ -73,14 +73,15 @@ export default function MapScreen() {
       ) : (
         <MapView
           style={styles.map}
+          provider={undefined}
           initialRegion={{
-            latitude: 3.848,
-            longitude: 11.502,
-            latitudeDelta: 0.05,
-            longitudeDelta: 0.05,
-          }}
+          latitude: 3.848,
+          longitude: 11.502,
+          latitudeDelta: 0.05,
+          longitudeDelta: 0.05,
+         }}
         >
-          {places.map((place: any) => (
+        {places.map((place: any) => (
             <Marker
               key={place.id}
               coordinate={{
@@ -96,7 +97,7 @@ export default function MapScreen() {
                 <Text style={styles.calloutAddress}>{place.address}</Text>
               </Callout>
             </Marker>
-          ))}
+        ))}
         </MapView>
       )}
     </View>
