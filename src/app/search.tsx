@@ -4,7 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useFonts, Poppins_700Bold, Poppins_600SemiBold, Poppins_400Regular, Poppins_400Regular_Italic } from '@expo-google-fonts/poppins';
 
-export default function SearchScreen() {
+export default function SearchScreen() { 
   const router = useRouter();
   const [search, setSearch] = useState('');
   const [city, setCity] = useState('');
@@ -35,12 +35,13 @@ export default function SearchScreen() {
   }
 
   async function handleSearch() {
+
     if (!search) return;
     setLoading(true);
     setSearched(true);
     try {
       const params = new URLSearchParams({ category: search, city });
-      const response = await fetch(`http://10.97.130.208:3000/api/places/search?${params}`);
+      const response = await fetch(`http://10.30.201.208:3000/api/places/search?${params}`);
       const data = await response.json();
       let filtered = data;
       if (selectedFilters.length > 0) {

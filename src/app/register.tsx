@@ -12,6 +12,7 @@ export default function RegisterScreen() {
   const router = useRouter();
 
   async function handleRegister() {
+   
     if (!name || !email || !password || !confirm) {
       Alert.alert('Champs manquants', 'Veuillez remplir tous les champs');
       return;
@@ -22,7 +23,7 @@ export default function RegisterScreen() {
     }
     setLoading(true);
     try {
-      const response = await fetch('http://10.97.130.208:3000/api/auth/register', {
+      const response = await fetch('http://10.30.201.208:3000/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, password }),

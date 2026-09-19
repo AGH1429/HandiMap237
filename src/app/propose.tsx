@@ -1,10 +1,12 @@
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Alert, Switch } from 'react-native';
-import { useState } from 'react';
+import { Poppins_400Regular, Poppins_400Regular_Italic, Poppins_600SemiBold, Poppins_700Bold, useFonts } from '@expo-google-fonts/poppins';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { useFonts, Poppins_700Bold, Poppins_600SemiBold, Poppins_400Regular, Poppins_400Regular_Italic } from '@expo-google-fonts/poppins';
+import { useState } from 'react';
+import { Alert, ScrollView, StyleSheet, Switch, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 export default function ProposeScreen() {
+ 
   const router = useRouter();
   const [name, setName] = useState('');
   const [category, setCategory] = useState('');
@@ -16,7 +18,7 @@ export default function ProposeScreen() {
   const [hasParking, setHasParking] = useState(false);
   const [hasWideDoors, setHasWideDoors] = useState(false);
   const [loading, setLoading] = useState(false);
-
+  
   const [fontsLoaded] = useFonts({
     Poppins_700Bold,
     Poppins_600SemiBold,
@@ -34,11 +36,13 @@ export default function ProposeScreen() {
 
     setLoading(true);
     try {
-      const response = await fetch('http://10.97.130.208:3000/api/places/propose', {
+
+      const token = await AsyncStorage.getItem('token');
+      const response = await fetch('http://10.30.201.208:3000/api/places/propose', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer TON_TOKEN',
+          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({
           name, category, address, city,

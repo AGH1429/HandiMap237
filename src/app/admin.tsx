@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, ActivityIndicator } from 'react-native';
+ import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, ActivityIndicator } from 'react-native';
 import { useEffect, useState } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
@@ -24,7 +24,7 @@ export default function AdminScreen() {
 
   async function fetchPlaces() {
     try {
-      const response = await fetch('http://10.97.130.208:3000/api/places/search?category=&city=');
+      const response = await fetch('http://10.30.201.208:3000/api/places/search?category=&city=');
       const data = await response.json();
       setPendingPlaces(data.filter((p: any) => !p.is_approved));
       setApprovedPlaces(data.filter((p: any) => p.is_approved));
@@ -37,7 +37,7 @@ export default function AdminScreen() {
 
   async function handleApprove(id: string) {
     try {
-      const response = await fetch(`http://10.97.130.208:3000/api/places/approve/${id}`, {
+      const response = await fetch(`http://10.30.201.208:3000/api/places/approve/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -64,7 +64,7 @@ export default function AdminScreen() {
           style: 'destructive',
           onPress: async () => {
             try {
-              await fetch(`http://10.97.130.208:3000/api/places/${id}`, {
+              await fetch(`http://10.30.201.208:3000/api/places/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': 'Bearer TON_TOKEN' },
               });

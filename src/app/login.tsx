@@ -2,6 +2,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, StatusBar }
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -10,20 +11,23 @@ export default function LoginScreen() {
   const router = useRouter();
 
   async function handleLogin() {
+     
     if (!email || !password) {
       Alert.alert('Champs manquants', 'Veuillez remplir tous les champs');
       return;
     }
     setLoading(true);
     try {
-      const response = await fetch('http://10.97.130.208:3000/api/auth/login', {
+      const response = await fetch('http://10.30.201.208:3000/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
       const data = await response.json();
       if (response.ok) {
-        router.replace('/home' as any);
+       await AsyncStorage.setItem('token', data.token);
+       await AsyncStorage.setItem('user', JSON.stringify(data.user));
+       router.replace('/home' as any);
       } else {
         Alert.alert('Erreur', data.message);
       }
@@ -33,7 +37,7 @@ export default function LoginScreen() {
       setLoading(false);
     }
   }
-
+  
   return (
     <LinearGradient colors={['#1a56db', '#0a2d6e']} style={styles.gradient}>
       <StatusBar barStyle="light-content" />
